@@ -1,6 +1,7 @@
 package com.fvalle.company.controller;
 
 import com.fvalle.company.dto.ProductDto;
+import com.fvalle.company.entity.Product;
 import com.fvalle.company.service.IProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -44,10 +45,23 @@ public class ProductController {
         return new ResponseEntity<>(productService.save(productDto), HttpStatus.CREATED);
     }
 
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('admin:update')")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") int productId,
+                                                    @Valid @RequestBody ProductDto productDto){
+        return new ResponseEntity<>(productService.update(productId,productDto), HttpStatus.OK);
+    }
+
     @GetMapping("/all")
     @PreAuthorize("hasAnyAuthority('user:read', 'admin:read')")
     public ResponseEntity<List<ProductDto>> getAll(){
         return new ResponseEntity<>(productService.getAll(),HttpStatus.OK);
+    }
+
+    @GetMapping("/allProducts")
+    @PreAuthorize("hasAnyAuthority('user:read', 'admin:read')")
+    public ResponseEntity<List<Product>> findAll(){
+        return new ResponseEntity<>(productService.getAllProducts(),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

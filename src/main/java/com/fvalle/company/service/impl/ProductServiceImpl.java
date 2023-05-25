@@ -26,6 +26,11 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
     public Optional<List<ProductDto>> getByCategory(int categoryId) {
         List<Product> products = productRepository.findByIdCategoryOrderByNameAsc(categoryId);
         return Optional.of(productMapper.toProductsDto(products));
@@ -52,6 +57,25 @@ public class ProductServiceImpl implements IProductService {
     public ProductDto save(ProductDto productDto) {
         Product product = productMapper.toProduct(productDto);
         return productMapper.toProductDto(productRepository.save(product));
+    }
+
+    @Override
+    public ProductDto update(int id, ProductDto productDto) {
+        Product product = productRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Product id not found"));
+        Product productUpdated = mapDtoToEntityUpdate(product,productDto);
+        productRepository.save(productUpdated);
+        return productMapper.toProductDto(productUpdated);
+    }
+
+    private Product mapDtoToEntityUpdate(Product product, ProductDto productDto){
+        product.setName(productDto.getName());
+        product.setIdCategory(productDto.getCategoryId());
+        product.setSellingPrice(productDto.getPrice());
+        product.setStockQuantity(productDto.getStock());
+        product.setState(productDto.isActive());
+        product.setSupplierId(productDto.getIdSupplier());
+        return product;
     }
 
     @Override

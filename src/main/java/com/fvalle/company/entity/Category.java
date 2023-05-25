@@ -28,6 +28,6 @@ public class Category {
     @NotNull(message = "state field cannot be null")
     private Boolean state;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "category", orphanRemoval = true)
     private List<Product> products;
 }

@@ -29,21 +29,19 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('admin:read')")
+    @PreAuthorize("hasAnyAuthority('user:read', 'admin:read')")
     public ResponseEntity<List<CategoryDto>> getAll(){
         return new ResponseEntity<>(categoryService.getAll(),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin:read')")
-    public ResponseEntity<CategoryDto> getCategory(@PathVariable("id") int categoryId){
-        return categoryService.getCategory(categoryId)
-                .map(category -> new ResponseEntity<>(category, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @PreAuthorize("hasAnyAuthority('user:read', 'admin:read')")
+    public ResponseEntity<CategoryDto> getCategory(@PathVariable("id") int id){
+        return new ResponseEntity<>(categoryService.getCategory(id), HttpStatus.OK);
     }
 
     @GetMapping("/page")
-    @PreAuthorize("hasAuthority('admin:read')")
+    @PreAuthorize("hasAnyAuthority('user:read', 'admin:read')")
     public Page<Category> getAllCategories(Pageable pageable, int page) {
         Page<Category> result = categoryService.getAll(pageable,page);
         return result;
@@ -52,11 +50,11 @@ public class CategoryController {
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('admin:delete')")
-    public ResponseEntity<?> delete(@Valid @PathVariable("id") int categoryId) {
+    public ResponseEntity<String> delete(@Valid @PathVariable("id") int categoryId) {
         if (categoryService.delete(categoryId)) {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("Category " + categoryId + " deleted",HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Category " + categoryId + " not found",HttpStatus.NOT_FOUND);
         }
     }
 }

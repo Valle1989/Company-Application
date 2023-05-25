@@ -9,11 +9,12 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDto {
 
-    private int productId;
     private String name;
     private int categoryId;
     private double price;
     private int stock;
     private boolean active;
+    private int idSupplier;
     private CategoryDto categoryDto;
+
 }

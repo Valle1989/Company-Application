@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ICategoryService {
 
     List<CategoryDto> getAll();
-    Optional<CategoryDto> getCategory(int categoryId);
+    CategoryDto getCategory(int categoryId);
     CategoryDto save(CategoryDto categoryDto);
     public boolean delete(int categoryId);
     Page<Category> getAll(Pageable pageable, int page);

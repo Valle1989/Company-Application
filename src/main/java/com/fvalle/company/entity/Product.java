@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @Entity
 //@JsonInclude(JsonInclude.Include.NON_NULL)
-@Table(name = "productos")
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -31,11 +31,14 @@ public class Product {
     private Integer stockQuantity;
     @NotNull(message = "state field cannot be null")
     private Boolean state;
+    @Column(name = "id_supplier")
+    @NotNull(message = "supplierId field cannot be null")
+    private Integer supplierId;
 
-    /*@JsonBackReference
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "id_supplier", insertable = false, updatable = false)
-    private Supplier supplier;*/
+    private Supplier supplier;
 
     @JsonBackReference
     @ManyToOne
