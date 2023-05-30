@@ -1,10 +1,12 @@
 package com.fvalle.company.exception;
 
 import io.jsonwebtoken.MalformedJwtException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -49,5 +51,11 @@ public class ApiHandlerException extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ExceptionMessage  returnErrorBadCredentialsException(BadCredentialsException e){
         return new ExceptionMessage(String.valueOf(HttpStatus.FORBIDDEN.value()), e.getMessage(), LocalDateTime.now());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmailExistException.class)
+    public ExceptionMessage handleEmailExist(HttpServletRequest request, EmailExistException e) {
+        return new ExceptionMessage(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage(), LocalDateTime.now());
     }
 }

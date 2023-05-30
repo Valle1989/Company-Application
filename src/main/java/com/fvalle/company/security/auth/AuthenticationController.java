@@ -1,5 +1,6 @@
 package com.fvalle.company.security.auth;
 
+import com.fvalle.company.exception.EmailExistException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
-    ) {
+    ) throws EmailExistException {
         return ResponseEntity.ok(service.register(request));
     }
     @PostMapping("/authenticate")

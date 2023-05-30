@@ -1,6 +1,7 @@
 package com.fvalle.company.security.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fvalle.company.exception.EmailExistException;
 import com.fvalle.company.security.config.JwtService;
 import com.fvalle.company.security.repository.UserRepository;
 import com.fvalle.company.security.token.Token;
@@ -8,9 +9,11 @@ import com.fvalle.company.security.token.TokenRepository;
 import com.fvalle.company.security.token.TokenType;
 import com.fvalle.company.security.user.Role;
 import com.fvalle.company.security.user.User;
+import com.fvalle.company.service.IEmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,13 +26,21 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
+    @Value("${email.message}")
+    private String message;
     private final UserRepository repository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    private final IEmailService emailService;
+
+    public AuthenticationResponse register(RegisterRequest request) throws EmailExistException{
+        if (repository.findByEmail(request.getEmail()).isPresent()) {
+            throw new EmailExistException(request.getEmail());
+        }
+        emailService.sendEmail(request.getEmail(),request.getFirstname() + " " + request.getLastname(), message);
         var user = User.builder()
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
