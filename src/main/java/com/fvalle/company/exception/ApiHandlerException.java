@@ -48,6 +48,7 @@ public class ApiHandlerException extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(eM, e.getHttpStatus());
     }
 
+
     @ExceptionHandler(BadCredentialsException.class)
     public ExceptionMessage  returnErrorBadCredentialsException(BadCredentialsException e){
         return new ExceptionMessage(String.valueOf(HttpStatus.FORBIDDEN.value()), e.getMessage(), LocalDateTime.now());

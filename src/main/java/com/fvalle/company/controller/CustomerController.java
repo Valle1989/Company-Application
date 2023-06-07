@@ -1,6 +1,5 @@
 package com.fvalle.company.controller;
 
-import com.fvalle.company.dto.CategoryDto;
 import com.fvalle.company.entity.Customer;
 import com.fvalle.company.service.ICustomerService;
 import jakarta.validation.Valid;
@@ -11,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/customer")
@@ -29,5 +29,12 @@ public class CustomerController {
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<List<Customer>> getAll(){
         return new ResponseEntity<>(customerService.getAll(),HttpStatus.OK);
+    }
+
+    @PatchMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('admin:update')")
+    public ResponseEntity<Customer> updateCustomerByField(@PathVariable("id") Integer id, @RequestBody
+    Map<String,Object> fields){
+        return new ResponseEntity<>(customerService.updateCustomerByFields(id,fields), HttpStatus.OK);
     }
 }

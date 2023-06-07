@@ -22,6 +22,12 @@ public class BadRequestException extends RuntimeException{
         this.httpStatus = httpStatus;
     }
 
+    public BadRequestException(String code,HttpStatus httpStatus,String message) {
+        super(message);
+        this.code = code;
+        this.httpStatus = httpStatus;
+    }
+
     public BadRequestException(String code,HttpStatus httpStatus,String message, List<ErrorDetails> errors) {
         super(message);
         this.code = code;
