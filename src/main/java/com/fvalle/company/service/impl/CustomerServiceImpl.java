@@ -49,6 +49,13 @@ public class CustomerServiceImpl implements ICustomerService, GenericMethods<Cus
     }
 
     @Override
+    public Customer getCustomerById(Integer id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Id, not found"));
+        return customer;
+    }
+
+    @Override
     public Customer save(Customer customer) {
         return customerRepository.save(customer);
     }

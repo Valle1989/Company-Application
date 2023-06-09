@@ -31,6 +31,12 @@ public class CustomerController {
         return new ResponseEntity<>(customerService.getAll(),HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<Customer> getCustomerById(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(customerService.getCustomerById(id),HttpStatus.OK);
+    }
+
     @PatchMapping("/update/{id}")
     @PreAuthorize("hasAuthority('admin:update')")
     public ResponseEntity<Customer> updateCustomerByField(@PathVariable("id") Integer id, @RequestBody

@@ -2,6 +2,9 @@ package com.fvalle.company.security.user;
 
 import com.fvalle.company.security.token.Token;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,9 +27,21 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @NotBlank
+    @Size(max = 30)
     private String firstName;
+
+    @NotBlank
+    @Size(max = 30)
     private String lastName;
+
+    @Email
+    @NotBlank
+    @Size(max = 80)
     private String email;
+
+    @NotBlank
     private String password;
 
     @Enumerated(EnumType.STRING)

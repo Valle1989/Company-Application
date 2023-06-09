@@ -2,6 +2,8 @@ package com.fvalle.company.service.impl;
 
 import com.fvalle.company.entity.Employee;
 import com.fvalle.company.entity.Product;
+import com.fvalle.company.exception.BadRequestException;
+import com.fvalle.company.exception.ErrorDetails;
 import com.fvalle.company.exception.NotFoundException;
 import com.fvalle.company.repository.EmployeeRepository;
 import com.fvalle.company.security.repository.UserRepository;
@@ -17,9 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,28 +61,40 @@ public class EmployeeServiceImpl implements IEmployeeService {
     public Employee updateEmployeeByFields(Integer id, Map<String, Object> fields) {
         Employee getEmployee = employeeRepository
                 .findById(id).orElseThrow(() -> new NotFoundException("Employee id not found"));
+
+        List<Employee> employees = new ArrayList<>();
+        employees.add(getEmployee);
+
+        Map<String, Object> employeeMap = new HashMap<>();
+        for(Employee employee : employees){
+            employeeMap.put("firstName", employee.getFirstName());
+            employeeMap.put("lastName", employee.getLastName());
+            employeeMap.put("birthDate", employee.getBirthDate());
+            employeeMap.put("photo", employee.getPhoto());
+            employeeMap.put("notes", employee.getNotes());
+        }
+
+        List<ErrorDetails> list = new ArrayList<>();
         fields.forEach((key,value) -> {
+            if(value == null || value.equals("")){
+                list.add(new ErrorDetails(HttpStatus.BAD_REQUEST.value(),key + " field must be send"));
+            }else{
+                employeeMap.forEach((k,v) ->{
+                    if(k.equals(key)){
+                        if(v.getClass() != value.getClass()){
+                            throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,key + " field must be a correct type value",new ArrayList<>());
+                        }
+                    }
+                });
+            }
             Field field = ReflectionUtils.findField(Employee.class,key);
             field.setAccessible(true);
             ReflectionUtils.setField(field, getEmployee, value);
         });
+        if(!list.isEmpty()){
+            throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,"Field or fields cannot be null or an empty value",list);
+        }
         return employeeRepository.save(getEmployee);
     }
-
-    /*@Override
-    public ResponseEntity<?> delete(Integer id) {
-        UserDetails activeUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = activeUser.getUsername();
-        User user = userRepository.findByEmail(username).get();
-
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Employee id not found"));
-
-        if (employee.getId() == user.getId()) {
-            employeeRepository.delete(employee);
-            return new ResponseEntity<>("Employee deleted", HttpStatus.OK);
-        } else {
-            throw new BadCredentialsException("Error, bad credentials.");
-        }
-    }*/
+    
 }

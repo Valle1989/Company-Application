@@ -13,6 +13,8 @@ public interface ICustomerService {
 
     List<CustomerDto> findAll();
     Optional<CustomerDto> getCustomerDto(int id);
+
+    Customer getCustomerById(Integer id);
     Customer save(Customer customer);
 
     CustomerDto addCustomerDto(CustomerDto customerDto);
