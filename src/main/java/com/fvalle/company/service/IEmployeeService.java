@@ -1,5 +1,6 @@
 package com.fvalle.company.service;
 
+import com.fvalle.company.dto.EmployeeDto;
 import com.fvalle.company.dto.ProductDto;
 import com.fvalle.company.entity.Employee;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,8 @@ public interface IEmployeeService {
     List<Employee> getAll();
     Optional<Employee> getEmployee(int productId);
     Employee save(Employee employee);
+
+    EmployeeDto saveEmployeeDto(EmployeeDto employeeDto);
 
     Employee update(Integer id, Employee employee);
 

@@ -17,11 +17,14 @@ public interface EmployeeMapper {
     @Mappings({
             @Mapping(source = "firstName", target = "first_Name"),
             @Mapping(source = "lastName", target = "last_Name"),
-            @Mapping(source = "birthDate", target = "employee_birthDate")
+            @Mapping(source = "birthDate", target = "employee_birthDate"),
+            @Mapping(source = "photo", target = "employee_photo"),
+            @Mapping(source = "notes", target = "employee_notes")
     })
     EmployeeDto toEmployeeDto(Employee employee);
     List<EmployeeDto> toEmployeesDto(List<Employee> employeeList);
 
     @InheritInverseConfiguration
+    @Mapping(target = "orders", ignore = true)
     Employee toEmployee(EmployeeDto employeeDto);
 }

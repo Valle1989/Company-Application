@@ -35,6 +35,20 @@ public class CheckNullField {
         }
     }
 
+    public static <T> void checkIfIsNullWithoutRegExp(T parameter, String field, Predicate<T> value, List<ErrorDetails> list){
+        Optional<T> optional = Optional.ofNullable(parameter);
+        if(optional.isPresent()){
+            if(value.test(parameter)){
+                list.add(new ErrorDetails(HttpStatus.BAD_REQUEST.value(),field + " field is mandatory. However, " +
+                        "it cannot be an empty string, numbers are not allowed, and null cannot be entered."));
+                logger.error("Error, el campo " + field.toLowerCase() + " debe mandarse obligatoriamente");
+            }
+        }else{
+            list.add(new ErrorDetails(HttpStatus.BAD_REQUEST.value(),field + " field cannot be null"));
+            logger.error("Error, el campo " + field.toLowerCase() + " no debe ser nulo");
+        }
+    }
+
     public static boolean isValid(String data, String regex){
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(data);

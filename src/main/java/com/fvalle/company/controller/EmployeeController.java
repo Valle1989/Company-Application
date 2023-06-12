@@ -1,6 +1,7 @@
 package com.fvalle.company.controller;
 
 import com.fvalle.company.dto.CategoryDto;
+import com.fvalle.company.dto.EmployeeDto;
 import com.fvalle.company.dto.ProductDto;
 import com.fvalle.company.entity.Employee;
 import com.fvalle.company.service.IEmployeeService;
@@ -25,6 +26,12 @@ public class EmployeeController {
     @PreAuthorize("hasAuthority('admin:create')")
     public ResponseEntity<Employee> addEmployee(@Valid @RequestBody Employee employee){
         return new ResponseEntity<>(employeeService.save(employee), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/add/dto")
+    @PreAuthorize("hasAuthority('admin:create')")
+    public ResponseEntity<EmployeeDto> addEmployeeDto(@Valid @RequestBody EmployeeDto employeeDto){
+        return new ResponseEntity<>(employeeService.saveEmployeeDto(employeeDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
