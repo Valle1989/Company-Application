@@ -21,5 +21,5 @@ public interface IEmployeeService {
 
     Employee updateEmployeeByFields(Integer id, Map<String,Object> fields);
 
-    //ResponseEntity<?> delete(Integer id);
+    boolean delete(Integer id);
 }

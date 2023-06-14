@@ -1,8 +1,6 @@
 package com.fvalle.company.controller;
 
-import com.fvalle.company.dto.CategoryDto;
 import com.fvalle.company.dto.EmployeeDto;
-import com.fvalle.company.dto.ProductDto;
 import com.fvalle.company.entity.Employee;
 import com.fvalle.company.service.IEmployeeService;
 import jakarta.validation.Valid;
@@ -34,6 +32,14 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.saveEmployeeDto(employeeDto), HttpStatus.CREATED);
     }
 
+    @GetMapping("/byId/{id}")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<Employee> getById(@PathVariable("id") Integer id){
+        return employeeService.getEmployee(id).
+                map(employee -> new ResponseEntity<>(employee, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<List<Employee>> getAll(){
@@ -54,9 +60,13 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.updateEmployeeByFields(id,fields), HttpStatus.OK);
     }
 
-    /*@DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('admin:delete')")
-    public ResponseEntity<?> delete(@Valid @PathVariable("id") Integer id) {
-        return employeeService.delete(id);
-    }*/
+    public ResponseEntity<String> delete(@Valid @PathVariable("id") Integer id) {
+        if(employeeService.delete(id)){
+            return new ResponseEntity<>("Employee with id " + id + " deleted",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Id not found",HttpStatus.NOT_FOUND);
+        }
+    }
 }

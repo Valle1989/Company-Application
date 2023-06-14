@@ -7,7 +7,6 @@ import com.fvalle.company.exception.ErrorDetails;
 import com.fvalle.company.exception.NotFoundException;
 import com.fvalle.company.mapper.EmployeeMapper;
 import com.fvalle.company.repository.EmployeeRepository;
-import com.fvalle.company.security.repository.UserRepository;
 import com.fvalle.company.service.IEmployeeService;
 import com.fvalle.company.utils.CheckNullField;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +23,9 @@ import static com.fvalle.company.utils.CheckNullField.*;
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements IEmployeeService {
-
-    private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
-
     private final EmployeeMapper employeeMapper;
-
     private static final String BIRTHDATE_REGEXP = "^\\d{4}-\\d{2}-\\d{2}$";
-
     private static final String VALID_NAME = "^[A-Z]'?[- a-zA-Z]*$";
 
     @Override
@@ -40,17 +34,50 @@ public class EmployeeServiceImpl implements IEmployeeService {
     }
 
     @Override
-    public Optional<Employee> getEmployee(int productId) {
-        return Optional.empty();
+    public Optional<Employee> getEmployee(int employeeId) {
+        Optional<Employee> employee = employeeRepository.findById(employeeId);
+        if(!employee.isPresent()){
+            throw new NotFoundException("Error, id cannot be found");
+        }else{
+            return employee;
+        }
     }
 
     @Override
     public Employee save(Employee employee) {
+        List<ErrorDetails> list = new ArrayList<>();
+        if(checkError(e -> e.getFirstName() == null || !isValid(e.getFirstName(),VALID_NAME), employee) ||
+                checkError(e -> e.getLastName() == null || !isValid(e.getLastName(),VALID_NAME), employee) ||
+                checkError(e -> e.getBirthDate() == null || !isValid(e.getBirthDate(),BIRTHDATE_REGEXP), employee) ||
+                checkError(e -> e.getPhoto() == null || e.getPhoto().equals("") , employee) ||
+                checkError(e -> e.getNotes() == null || e.getNotes().equals("") , employee)){
+
+            checkIfIsNull(employee.getFirstName(),"FirstName",n -> n == null,VALID_NAME, list);
+            checkIfIsNull(employee.getLastName(),"LastName",n -> n == null,VALID_NAME, list);
+            checkIfIsNull(employee.getBirthDate(),"BirthDate",n -> n == null,BIRTHDATE_REGEXP, list);
+            checkIfIsNullWithoutRegExp(employee.getPhoto(),"Photo",n -> n == null || n.equals(""), list);
+            checkIfIsNullWithoutRegExp(employee.getNotes(),"Notes",n -> n == null || n.equals(""), list);
+            throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,"All fields must be send",list);
+        }
         return employeeRepository.save(employee);
     }
 
     @Override
     public EmployeeDto saveEmployeeDto(EmployeeDto employeeDto) {
+        List<ErrorDetails> list = new ArrayList<>();
+        if(checkError(e -> e.getFirst_Name() == null || !isValid(e.getFirst_Name(),VALID_NAME), employeeDto) ||
+                checkError(e -> e.getLast_Name() == null || !isValid(e.getLast_Name(),VALID_NAME), employeeDto) ||
+                checkError(e -> e.getEmployee_birthDate() == null || !isValid(e.getEmployee_birthDate(),BIRTHDATE_REGEXP), employeeDto) ||
+                checkError(e -> e.getEmployee_photo() == null || e.getEmployee_photo().equals("") , employeeDto) ||
+                checkError(e -> e.getEmployee_notes() == null || e.getEmployee_notes().equals("") , employeeDto)){
+
+            checkIfIsNull(employeeDto.getFirst_Name(),"first_Name",n -> n == null,VALID_NAME, list);
+            checkIfIsNull(employeeDto.getLast_Name(),"last_Name",n -> n == null,VALID_NAME, list);
+            checkIfIsNull(employeeDto.getEmployee_birthDate(),"employee_birthDate",n -> n == null,BIRTHDATE_REGEXP, list);
+            checkIfIsNullWithoutRegExp(employeeDto.getEmployee_photo(),"employee_photo",n -> n == null || n.equals(""), list);
+            checkIfIsNullWithoutRegExp(employeeDto.getEmployee_notes(),"employee_notes",n -> n == null || n.equals(""), list);
+            throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,"All fields must be send",list);
+        }
         Employee employee = employeeRepository.save(employeeMapper.toEmployee(employeeDto));
         return employeeMapper.toEmployeeDto(employee);
     }
@@ -84,7 +111,6 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     public Employee updateEmployeeByFields(Integer id, Map<String, Object> fields) {
-        //String regExp = "^\\d{4}-\\d{2}-\\d{2}$";
 
         Employee getEmployee = employeeRepository
                 .findById(id).orElseThrow(() -> new NotFoundException("Employee id not found"));
@@ -126,6 +152,16 @@ public class EmployeeServiceImpl implements IEmployeeService {
             throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,"Field or fields cannot be null or an empty value",list);
         }
         return employeeRepository.save(getEmployee);
+    }
+
+    @Override
+    public boolean delete(Integer id) {
+        if (getEmployee(id).isPresent()){
+            employeeRepository.deleteById(id);
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }
