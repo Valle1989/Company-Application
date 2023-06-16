@@ -58,11 +58,11 @@ public class OrderServiceImpl implements IOrderService {
                 .orElseThrow(() -> new NotFoundException("Order id not found"));
 
         if (order != null && order.getUser().getUsername().equals(username)) {
-            // El usuario autenticado tiene permiso para eliminar la orden
+            // The authenticated user has permission to delete the order
             orderRepository.delete(order);
             return new ResponseEntity<>("Order deleted", HttpStatus.OK);
         } else {
-            // El usuario no tiene permiso para eliminar la orden
+            // The user does not have permission to delete the order
             throw new BadCredentialsException("Error, bad credentials.");
         }
     }

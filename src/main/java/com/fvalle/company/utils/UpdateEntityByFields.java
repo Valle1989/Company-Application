@@ -3,7 +3,6 @@ package com.fvalle.company.utils;
 import com.fvalle.company.exception.BadRequestException;
 import com.fvalle.company.exception.ErrorDetails;
 import com.fvalle.company.exception.NotFoundException;
-import com.fvalle.company.mapper.CustomerMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -13,9 +12,18 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 @Component
-public class UpdateEntityByFields <T> {
+public class UpdateEntityByFields <T,K> {
 
-    public T updateFields(Integer id, Map<String,Object> fields, JpaRepository<T,Integer> repository) {
+    /**
+     * Method used to make a partial update of the fields of an entity. In addition, it is checked that the
+     * fields are not null, empty . Otherwise, an exception is triggered.
+     * @param id
+     * @param fields
+     * @param repository
+     * @param entityClass
+     * @return
+     */
+    public T updateFields(Integer id, Map<String,Object> fields, JpaRepository<T,Integer> repository, K entityClass) {
         T entity = repository
                 .findById(id).orElseThrow(() -> new NotFoundException("Id not found"));
 
@@ -23,9 +31,9 @@ public class UpdateEntityByFields <T> {
         fields.forEach((key,value) -> {
             if(value == null || value.equals("")){
                 list.add(new ErrorDetails(HttpStatus.BAD_REQUEST.value(),key + " field must be send"));
-            } /*else if (value.getClass() != String.class) {
+            } else if (value.getClass() != entityClass.getClass()) {
                 throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,key + " field must be an String value",list);
-            }*/
+            }
             Field field = ReflectionUtils.findField(entity.getClass(),key);
             field.setAccessible(true);
             ReflectionUtils.setField(field, entity, value);

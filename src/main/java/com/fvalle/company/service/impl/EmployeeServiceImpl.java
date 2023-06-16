@@ -28,11 +28,21 @@ public class EmployeeServiceImpl implements IEmployeeService {
     private static final String BIRTHDATE_REGEXP = "^\\d{4}-\\d{2}-\\d{2}$";
     private static final String VALID_NAME = "^[A-Z]'?[- a-zA-Z]*$";
 
+    /**
+     * Method used to obtain the list of Employees
+     * @return List<Employee> list
+     */
     @Override
     public List<Employee> getAll() {
         return employeeRepository.findAll();
     }
 
+    /**
+     * Method used to get a employee by id
+     * @param employeeId
+     * @return Employee
+     * @throws NotFoundException if the id could not be found
+     */
     @Override
     public Optional<Employee> getEmployee(int employeeId) {
         Optional<Employee> employee = employeeRepository.findById(employeeId);
@@ -43,6 +53,11 @@ public class EmployeeServiceImpl implements IEmployeeService {
         }
     }
 
+    /**
+     * Method used to save an employee to the database
+     * @param employee
+     * @return Employee
+     */
     @Override
     public Employee save(Employee employee) {
         List<ErrorDetails> list = new ArrayList<>();
@@ -62,6 +77,12 @@ public class EmployeeServiceImpl implements IEmployeeService {
         return employeeRepository.save(employee);
     }
 
+    /**
+     * Method used to receive an employeeDto as a parameter and then to use it to convert the employeeDto to
+     * an employee to can save it into the database. However, our service will return an EmployeeDto.
+     * @param employeeDto
+     * @return EmployeeDto
+     */
     @Override
     public EmployeeDto saveEmployeeDto(EmployeeDto employeeDto) {
         List<ErrorDetails> list = new ArrayList<>();
@@ -82,6 +103,13 @@ public class EmployeeServiceImpl implements IEmployeeService {
         return employeeMapper.toEmployeeDto(employee);
     }
 
+    /**
+     * Method used to update an employee into the database.
+     * @param id
+     * @param employee
+     * @throws NotFoundException if the id could not be found
+     * @return Employee
+     */
     @Override
     public Employee update(Integer id, Employee employee) {
 
@@ -109,6 +137,12 @@ public class EmployeeServiceImpl implements IEmployeeService {
         return employeeRepository.save(getEmployee);
     }
 
+    /**
+     * Method used to partially update an employee, without the need to send all its fields.
+     * @param id
+     * @param fields
+     * @return Employee
+     */
     @Override
     public Employee updateEmployeeByFields(Integer id, Map<String, Object> fields) {
 
@@ -142,6 +176,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
                             throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,key + " field must be a correct type value",new ArrayList<>());
                         }
                     }
+                    /*if(v.equals(value)){
+                        if(!k.equals(key)) throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,key + " field misspelled",new ArrayList<>());
+                    }*/
                 });
             }
             Field field = ReflectionUtils.findField(Employee.class,key);
@@ -154,6 +191,10 @@ public class EmployeeServiceImpl implements IEmployeeService {
         return employeeRepository.save(getEmployee);
     }
 
+    /**
+     * Method used to delete an employee from de database
+     * @return true or false
+     */
     @Override
     public boolean delete(Integer id) {
         if (getEmployee(id).isPresent()){
