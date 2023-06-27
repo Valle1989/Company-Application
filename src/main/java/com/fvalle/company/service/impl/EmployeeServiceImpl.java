@@ -46,6 +46,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public Optional<Employee> getEmployee(int employeeId) {
         Optional<Employee> employee = employeeRepository.findById(employeeId);
+
         if(!employee.isPresent()){
             throw new NotFoundException("Error, id cannot be found");
         }else{
@@ -112,38 +113,8 @@ public class EmployeeServiceImpl implements IEmployeeService {
      */
     @Override
     public Employee update(Integer id, Employee employee) {
-        Optional<Employee> em = employeeRepository.findById(id);
-        if(!em.isPresent()){
-            throw new NotFoundException("Error, id cannot be found");
-        }else{
-            Employee getEmployee = em.get();
-            //Employee getEmployee = employeeRepository
-            //.findById(id).orElseThrow(() -> new NotFoundException("Employee id not found"));
-            List<ErrorDetails> list = new ArrayList<>();
-            if(checkError(e -> e.getFirstName() == null || !isValid(e.getFirstName(),VALID_NAME), employee) ||
-                    checkError(e -> e.getLastName() == null || !isValid(e.getLastName(),VALID_NAME), employee) ||
-                    checkError(e -> e.getBirthDate() == null || !isValid(e.getBirthDate(),BIRTHDATE_REGEXP), employee) ||
-                    checkError(e -> e.getPhoto() == null || e.getPhoto().equals("") , employee) ||
-                    checkError(e -> e.getNotes() == null || e.getNotes().equals("") , employee)){
-
-                checkIfIsNull(employee.getFirstName(),"FirstName",n -> n == null,VALID_NAME, list);
-                checkIfIsNull(employee.getLastName(),"LastName",n -> n == null,VALID_NAME, list);
-                checkIfIsNull(employee.getBirthDate(),"BirthDate",n -> n == null,BIRTHDATE_REGEXP, list);
-                checkIfIsNullWithoutRegExp(employee.getPhoto(),"Photo",n -> n == null || n.equals(""), list);
-                checkIfIsNullWithoutRegExp(employee.getNotes(),"Notes",n -> n == null || n.equals(""), list);
-                throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,"All fields must be send",list);
-            }
-
-            getEmployee.setFirstName(employee.getFirstName());
-            getEmployee.setLastName(employee.getLastName());
-            getEmployee.setBirthDate(employee.getBirthDate());
-            getEmployee.setPhoto(employee.getPhoto());
-            getEmployee.setNotes(employee.getNotes());
-            return employeeRepository.save(getEmployee);
-        }
-        /*Employee getEmployee = em.get();
-        //Employee getEmployee = employeeRepository
-                //.findById(id).orElseThrow(() -> new NotFoundException("Employee id not found"));
+        Employee getEmployee = employeeRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Employee id not found"));
         List<ErrorDetails> list = new ArrayList<>();
         if(checkError(e -> e.getFirstName() == null || !isValid(e.getFirstName(),VALID_NAME), employee) ||
                 checkError(e -> e.getLastName() == null || !isValid(e.getLastName(),VALID_NAME), employee) ||
@@ -164,7 +135,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
         getEmployee.setBirthDate(employee.getBirthDate());
         getEmployee.setPhoto(employee.getPhoto());
         getEmployee.setNotes(employee.getNotes());
-        return employeeRepository.save(getEmployee);*/
+        return employeeRepository.save(getEmployee);
     }
 
     /**
