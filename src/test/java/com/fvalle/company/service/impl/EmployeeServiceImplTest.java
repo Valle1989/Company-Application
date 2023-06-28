@@ -283,6 +283,17 @@ class EmployeeServiceImplTest {
 
     @Test
     void updateEmployeeByFields() {
+
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("firstName","Fede");
+
+        Optional<Employee> optionalEntity = Optional.of(employee);
+        Mockito.when(employeeRepository.findById(1)).thenReturn(optionalEntity);
+
+        Optional<Employee> result = employeeRepository.findById(1);
+
+        Employee res = employeeService.updateEmployeeByFields(result.get().getId(), fields);
+        verify(employeeRepository).save(any(Employee.class));
     }
 
     @Test
