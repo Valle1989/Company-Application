@@ -36,12 +36,12 @@ public class Product {
     private Integer supplierId;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_supplier", insertable = false, updatable = false)
     private Supplier supplier;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_category", insertable = false, updatable = false)
     private Category category;
 }

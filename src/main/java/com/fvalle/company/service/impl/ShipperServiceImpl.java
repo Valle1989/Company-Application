@@ -7,6 +7,7 @@ import com.fvalle.company.repository.ShipperRepository;
 import com.fvalle.company.service.IShipperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,11 +36,13 @@ public class ShipperServiceImpl implements IShipperService {
     }
 
     @Override
+    @Transactional
     public Shipper save(Shipper shipper) {
         return shipperRepository.save(shipper);
     }
 
     @Override
+    @Transactional
     public ShipperDto addShipper(ShipperDto shipperDto) {
         Shipper shipper = shipperMapper.toShipper(shipperDto);
         return shipperMapper.toShipperDto(shipperRepository.save(shipper));

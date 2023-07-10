@@ -45,22 +45,22 @@ public class Order {
     @NotNull(message = "shipperId field cannot be null")
     private Integer shipperId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", insertable = false, updatable = false)
     @JsonIgnore
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_customer", insertable = false, updatable = false)
     @JsonIgnore
     private Customer customer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_employee", insertable = false, updatable = false)
     @JsonIgnore
     private Employee employee;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_shipper", insertable = false, updatable = false)
     @JsonIgnore
     private Shipper shipper;

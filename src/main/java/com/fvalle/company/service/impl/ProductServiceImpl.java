@@ -8,6 +8,7 @@ import com.fvalle.company.repository.ProductRepository;
 import com.fvalle.company.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,12 +55,14 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductDto save(ProductDto productDto) {
         Product product = productMapper.toProduct(productDto);
         return productMapper.toProductDto(productRepository.save(product));
     }
 
     @Override
+    @Transactional
     public ProductDto update(int id, ProductDto productDto) {
         Product product = productRepository
                 .findById(id).orElseThrow(() -> new NotFoundException("Product id not found"));
@@ -79,6 +82,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    @Transactional
     public boolean delete(int productId) {
         return getProduct(productId).map(product -> {
             productRepository.deleteById(productId);

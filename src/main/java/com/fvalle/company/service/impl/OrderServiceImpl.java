@@ -15,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,12 +45,18 @@ public class OrderServiceImpl implements IOrderService {
         return orderRepository.findAll();
     }
 
+    public List<Order> getCustomerOrders(Integer idCustomer) {
+        return this.orderRepository.findCustomerOrders(idCustomer);
+    }
+
     @Override
+    @Transactional
     public Order save(Order order) {
         return orderRepository.save(order);
     }
 
     @Override
+    @Transactional
     public ResponseEntity<?> delete(Integer id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();

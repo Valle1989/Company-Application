@@ -2,6 +2,7 @@ package com.fvalle.company.controller;
 
 import com.fvalle.company.entity.Customer;
 import com.fvalle.company.service.ICustomerService;
+import com.fvalle.company.service.impl.CustomerServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.Map;
 public class CustomerController {
 
     private final ICustomerService customerService;
+    private final CustomerServiceImpl customerServiceImpl;
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyAuthority('user:create', 'admin:create')")
@@ -29,6 +31,12 @@ public class CustomerController {
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<List<Customer>> getAll(){
         return new ResponseEntity<>(customerService.getAll(),HttpStatus.OK);
+    }
+
+    @GetMapping("/phone/{phone}")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<Customer> getByPhone(@PathVariable("phone") String phone){
+        return new ResponseEntity<>(customerServiceImpl.findByPhone(phone),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

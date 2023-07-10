@@ -3,8 +3,10 @@ package com.fvalle.company.controller;
 import com.fvalle.company.dto.EmployeeDto;
 import com.fvalle.company.entity.Employee;
 import com.fvalle.company.service.IEmployeeService;
+import com.fvalle.company.service.impl.EmployeeServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +21,7 @@ import java.util.Map;
 public class EmployeeController {
 
     private final IEmployeeService employeeService;
+    private final EmployeeServiceImpl employeeServiceImpl;
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('admin:create')")
@@ -44,6 +47,16 @@ public class EmployeeController {
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<List<Employee>> getAll(){
         return new ResponseEntity<>(employeeService.getAll(),HttpStatus.OK);
+    }
+
+    @GetMapping("/all/page")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<Page<Employee>> getAllEmployee(@RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "8") int elements,
+                                                         @RequestParam(defaultValue = "firstName") String sortBy,
+                                                         @RequestParam(defaultValue = "ASC") String sortDirection){
+        return new ResponseEntity<>(employeeServiceImpl.findAllEmployee(page,elements,sortBy,sortDirection),
+                                    HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")

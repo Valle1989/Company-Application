@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,20 @@ public class CategoryServiceImpl implements ICategoryService {
         return categoryMapper.toCategories(categoryList);
     }
 
+    public List<Category> getAllCategoriesByStateTrue() {
+        List<Category> categoryList = categoryRepository.findAllByStateTrueOrderByDescriptionDesc();
+        return categoryList;
+    }
+
+    public CategoryDto findByDescriptionIgnoreCase(String description){
+        /*if(description.contains("0123456789")){
+            throw new NotFoundException("Cannot find categoryDto because the entered " +
+                                        "value cannot contain numbers");
+        }*/
+        Category category = categoryRepository.findByDescriptionIgnoreCase(description);
+        return categoryMapper.toCategoryDto(category);
+    }
+
     @Override
     public CategoryDto getCategory(int id) {
         Category category = categoryRepository.findById(id)
@@ -44,6 +59,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto save(CategoryDto categoryDto) {
         String validCategory = "^[A-Z]'?[- a-zA-Z]*$";
 
@@ -58,6 +74,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
+    @Transactional
     public boolean delete(int categoryId) {
         Optional<Category> category = categoryRepository.findById(categoryId);
         //Category category = categoryMapper.toCategory(getCategory(categoryId));

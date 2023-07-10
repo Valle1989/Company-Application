@@ -3,6 +3,7 @@ package com.fvalle.company.controller;
 import com.fvalle.company.dto.CategoryDto;
 import com.fvalle.company.entity.Category;
 import com.fvalle.company.service.ICategoryService;
+import com.fvalle.company.service.impl.CategoryServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import java.util.List;
 public class CategoryController {
 
     private final ICategoryService categoryService;
+    private final CategoryServiceImpl categoryServiceImpl;
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('admin:create')")
@@ -32,6 +34,18 @@ public class CategoryController {
     @PreAuthorize("hasAnyAuthority('user:read', 'admin:read')")
     public ResponseEntity<List<CategoryDto>> getAll(){
         return new ResponseEntity<>(categoryService.getAll(),HttpStatus.OK);
+    }
+
+    @GetMapping("/all/state")
+    @PreAuthorize("hasAnyAuthority('user:read', 'admin:read')")
+    public ResponseEntity<List<Category>> getAllCategoriesByStateTrue(){
+        return new ResponseEntity<>(categoryServiceImpl.getAllCategoriesByStateTrue(),HttpStatus.OK);
+    }
+
+    @GetMapping("/byDescription")
+    @PreAuthorize("hasAnyAuthority('user:read', 'admin:read')")
+    public ResponseEntity<CategoryDto> findByDescriptionIgnoreCase(@RequestParam("description") String description){
+        return new ResponseEntity<>(categoryServiceImpl.findByDescriptionIgnoreCase(description),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

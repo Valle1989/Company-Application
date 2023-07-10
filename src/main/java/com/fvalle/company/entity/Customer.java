@@ -34,6 +34,7 @@ public class Customer {
     @NotNull(message = "Phone field cannot be null")
     private String phone;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OrderBy("idOrder DESC")
     private List<Order> orders;
 }

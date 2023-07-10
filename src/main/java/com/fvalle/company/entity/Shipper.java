@@ -26,6 +26,6 @@ public class Shipper {
     @NotNull(message = "phone field cannot be null")
     private String phone;
 
-    @OneToMany(mappedBy = "shipper")
+    @OneToMany(mappedBy = "shipper", fetch = FetchType.EAGER)
     List<Order> orders;
 }

@@ -10,8 +10,13 @@ import com.fvalle.company.repository.EmployeeRepository;
 import com.fvalle.company.service.IEmployeeService;
 import com.fvalle.company.utils.CheckNullField;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -54,12 +59,20 @@ public class EmployeeServiceImpl implements IEmployeeService {
         }
     }
 
+    public Page<Employee> findAllEmployee(int page, int elements, String sortBy,
+                                                         String direction){
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        Pageable pageable = PageRequest.of(page,elements, sort);
+        return employeeRepository.findAll(pageable);
+    }
+
     /**
      * Method used to save an employee to the database
      * @param employee
      * @return Employee
      */
     @Override
+    @Transactional
     public Employee save(Employee employee) {
         List<ErrorDetails> list = new ArrayList<>();
         if(checkError(e -> e.getFirstName() == null || !isValid(e.getFirstName(),VALID_NAME), employee) ||
@@ -85,6 +98,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
      * @return EmployeeDto
      */
     @Override
+    @Transactional
     public EmployeeDto saveEmployeeDto(EmployeeDto employeeDto) {
         List<ErrorDetails> list = new ArrayList<>();
         if(checkError(e -> e.getFirst_Name() == null || !isValid(e.getFirst_Name(),VALID_NAME), employeeDto) ||
@@ -112,6 +126,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
      * @return Employee
      */
     @Override
+    @Transactional
     public Employee update(Integer id, Employee employee) {
         Employee getEmployee = employeeRepository
                 .findById(id).orElseThrow(() -> new NotFoundException("Employee id not found"));
@@ -145,6 +160,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
      * @return Employee
      */
     @Override
+    @Transactional
     public Employee updateEmployeeByFields(Integer id, Map<String, Object> fields) {
 
         Employee getEmployee = employeeRepository
@@ -197,6 +213,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
      * @return true or false
      */
     @Override
+    @Transactional
     public boolean delete(Integer id) {
         if (getEmployee(id).isPresent()){
             employeeRepository.deleteById(id);

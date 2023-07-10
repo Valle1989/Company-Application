@@ -32,12 +32,12 @@ public class OrderDetail {
     private Integer quantity;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_order", insertable = false, updatable = false)
     private Order order;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product", insertable = false, updatable = false)
     private Product product;
 }

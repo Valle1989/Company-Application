@@ -11,6 +11,7 @@ import com.fvalle.company.repository.SupplierRepository;
 import com.fvalle.company.service.ISupplierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +32,13 @@ public class SupplierServiceImpl implements ISupplierService {
     }
 
     @Override
+    @Transactional
     public Supplier add(Supplier supplier) {
         return supplierRepository.save(supplier);
     }
 
     @Override
+    @Transactional
     public SupplierWithProductDto save(SupplierWithProductDto supplierWithProductDto) {
         Supplier supplier = supplierWithProductMapper.toSupplier(supplierWithProductDto);
         supplierRepository.save(supplier);
@@ -53,6 +56,7 @@ public class SupplierServiceImpl implements ISupplierService {
     }
 
     @Override
+    @Transactional
     public boolean delete(int supplierId) {
         return false;
     }

@@ -4,6 +4,7 @@ import com.fvalle.company.dto.CategoryDto;
 import com.fvalle.company.dto.PurchaseOrderDto;
 import com.fvalle.company.entity.Order;
 import com.fvalle.company.service.IOrderService;
+import com.fvalle.company.service.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.List;
 public class OrderController {
 
     private final IOrderService orderService;
+    private final OrderServiceImpl orderServiceImpl;
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyAuthority('user:create', 'admin:create')")
@@ -30,6 +32,12 @@ public class OrderController {
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<List<PurchaseOrderDto>> getAll(){
         return new ResponseEntity<>(orderService.getAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/customer/{id}")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<List<Order>> getOutsideOrders(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(orderServiceImpl.getCustomerOrders(id));
     }
 
     @GetMapping("/allOrder")

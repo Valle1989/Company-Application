@@ -9,6 +9,7 @@ import com.fvalle.company.service.ICustomerService;
 import com.fvalle.company.utils.UpdateEntityByFields;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,10 @@ public class CustomerServiceImpl implements ICustomerService{
         }
     }
 
+    public Customer findByPhone(String phone) {
+        return this.customerRepository.findByPhone(phone);
+    }
+
     /**
      * Method used to get a customer by id
      * @param id
@@ -75,6 +80,7 @@ public class CustomerServiceImpl implements ICustomerService{
      * @return Customer
      */
     @Override
+    @Transactional
     public Customer save(Customer customer) {
         return customerRepository.save(customer);
     }
@@ -86,6 +92,7 @@ public class CustomerServiceImpl implements ICustomerService{
      * @return CustomerDto
      */
     @Override
+    @Transactional
     public CustomerDto addCustomerDto(CustomerDto customerDto) {
         Customer customer = customerMapper.toCustomer(customerDto);
         return customerMapper.toCustomerDto(customerRepository.save(customer));
@@ -99,6 +106,7 @@ public class CustomerServiceImpl implements ICustomerService{
      * @return Customer
      */
     @Override
+    @Transactional
     public Customer updateCustomer(Integer id, Customer customer) {
         Customer customerToUpdate = customerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Id, not found"));
@@ -118,12 +126,14 @@ public class CustomerServiceImpl implements ICustomerService{
      * @return Customer
      */
     @Override
+    @Transactional
     public Customer updateCustomerByFields(Integer id, Map<String, Object> fields){
         Customer customer = updateEntityByFields.updateFields(id,fields,customerRepository,"String");
         return customer;
     }
 
     @Override
+    @Transactional
     public boolean delete(Integer id) {
         return false;
     }

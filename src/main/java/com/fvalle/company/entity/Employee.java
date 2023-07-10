@@ -33,6 +33,6 @@ public class Employee {
     @NotNull(message = "notes field cannot be null")
     private String notes;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     private List<Order> orders;
 }

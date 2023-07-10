@@ -33,7 +33,7 @@ public class Supplier {
     @NotNull(message = "Phone field cannot be null")
     private String phone;
 
-    @OneToMany(mappedBy = "supplier")
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.EAGER)
     private List<Product> products;
 
 
