@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.List;
 
@@ -14,8 +15,9 @@ import java.util.List;
 @Data
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "suppliers")
-public class Supplier {
+public class Supplier extends AuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

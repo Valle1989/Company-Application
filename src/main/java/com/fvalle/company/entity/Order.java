@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
@@ -15,10 +16,11 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends AuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

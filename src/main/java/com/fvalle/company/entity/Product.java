@@ -5,15 +5,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 //@JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "products")
-public class Product {
+public class Product extends AuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
