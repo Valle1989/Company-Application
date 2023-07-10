@@ -6,6 +6,7 @@ import com.fvalle.company.exception.NotFoundException;
 import com.fvalle.company.mapper.CustomerMapper;
 import com.fvalle.company.mapper.EmployeeMapper;
 import com.fvalle.company.mapper.ShipperMapper;
+import com.fvalle.company.projection.OrderSummary;
 import com.fvalle.company.repository.OrderRepository;
 import com.fvalle.company.service.IOrderService;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,10 @@ public class OrderServiceImpl implements IOrderService {
 
     public List<Order> getCustomerOrders(Integer idCustomer) {
         return this.orderRepository.findCustomerOrders(idCustomer);
+    }
+
+    public OrderSummary getSummary(int orderId) {
+        return orderRepository.findSummary(orderId);
     }
 
     @Override

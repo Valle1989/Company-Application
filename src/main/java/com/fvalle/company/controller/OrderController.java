@@ -3,6 +3,7 @@ package com.fvalle.company.controller;
 import com.fvalle.company.dto.CategoryDto;
 import com.fvalle.company.dto.PurchaseOrderDto;
 import com.fvalle.company.entity.Order;
+import com.fvalle.company.projection.OrderSummary;
 import com.fvalle.company.service.IOrderService;
 import com.fvalle.company.service.impl.OrderServiceImpl;
 import jakarta.validation.Valid;
@@ -38,6 +39,12 @@ public class OrderController {
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<List<Order>> getOutsideOrders(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(orderServiceImpl.getCustomerOrders(id));
+    }
+
+    @GetMapping("/summary/{id}")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<OrderSummary> getSummary(@PathVariable int id) {
+        return ResponseEntity.ok(orderServiceImpl.getSummary(id));
     }
 
     @GetMapping("/allOrder")
