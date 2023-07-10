@@ -30,6 +30,15 @@ public class ShipperServiceImpl implements IShipperService {
         return shipperMapper.toShippersDto(shipperList);
     }
 
+    public boolean exists(int idShipper) {
+        return this.shipperRepository.existsById(idShipper);
+    }
+
+    @Transactional
+    public void updateShipper(ShipperDto dto, Integer id) {
+        shipperRepository.updateShipper(dto,id);
+    }
+
     @Override
     public Optional<Shipper> getShipper(int id) {
         return Optional.empty();
