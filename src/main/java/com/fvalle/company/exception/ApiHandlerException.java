@@ -83,4 +83,10 @@ public class ApiHandlerException {
     public ExceptionMessage handleEmailExist(HttpServletRequest request, EmailExistException e) {
         return new ExceptionMessage(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage(), LocalDateTime.now());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CategoryExistException.class)
+    public ExceptionMessage handleEmailExist(CategoryExistException e) {
+        return new ExceptionMessage(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage(), LocalDateTime.now());
+    }
 }

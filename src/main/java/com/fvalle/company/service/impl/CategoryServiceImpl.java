@@ -3,6 +3,7 @@ package com.fvalle.company.service.impl;
 import com.fvalle.company.dto.CategoryDto;
 import com.fvalle.company.entity.Category;
 import com.fvalle.company.exception.BadRequestException;
+import com.fvalle.company.exception.CategoryExistException;
 import com.fvalle.company.exception.ErrorDetails;
 import com.fvalle.company.exception.NotFoundException;
 import com.fvalle.company.mapper.CategoryMapper;
@@ -61,11 +62,23 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     @Transactional
     public CategoryDto save(CategoryDto categoryDto) {
+
+        List<CategoryDto> categoryDtoList = getAll();
+
+        Long sameCategory = categoryDtoList
+                .stream()
+                .filter(c -> c.getCategory().equalsIgnoreCase(categoryDto.getCategory()))
+                .count();
+
+        if(sameCategory > 0){
+            throw new CategoryExistException(categoryDto.getCategory());
+        }
+
         String validCategory = "^[A-Z]'?[- a-zA-Z]*$";
 
-        if(checkError(c -> c.getCategory() == null || !isValid(c.getCategory(),validCategory), categoryDto)){
+        if(checkError(c -> !isValid(c.getCategory(),validCategory) || c.getCategory().equalsIgnoreCase("null"), categoryDto)){
             List<ErrorDetails> list = new ArrayList<>();
-            checkIfIsNull(categoryDto.getCategory(),"Category",n -> n == null,validCategory, list);
+            checkIfIsNull(categoryDto.getCategory(),"Category",n -> n.equalsIgnoreCase("null"),validCategory, list);
             throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,"All fields must be send",list);
         }
 
