@@ -51,14 +51,14 @@ class EmployeeServiceImplTest {
         employee.setFirstName("Federico");
         employee.setLastName("Valle");
         employee.setBirthDate("1989-12-27");
-        employee.setPhoto("My photo");
+        employee.setPhoto("http://photo.jpg");
         employee.setNotes("New message");
 
         employeeDto = new EmployeeDto();
         employeeDto.setFirst_Name("Melisa");
         employeeDto.setLast_Name("Lieby");
         employeeDto.setEmployee_birthDate("1991-08-03");
-        employeeDto.setEmployee_photo("Meli photo");
+        employeeDto.setEmployee_photo("http://photo.jpg");
         employeeDto.setEmployee_notes("Ux/Ui Designer");
     }
 
@@ -101,7 +101,7 @@ class EmployeeServiceImplTest {
         waited.setFirstName("Federico");
         waited.setLastName("Valle");
         waited.setBirthDate("1989-12-27");
-        waited.setPhoto("My photo");
+        waited.setPhoto("http://photo.jpg");
         waited.setNotes("New message");
 
         when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
@@ -129,7 +129,7 @@ class EmployeeServiceImplTest {
         waited.setFirstName("");
         waited.setLastName("Valle");
         waited.setBirthDate("1989-12-27");
-        waited.setPhoto("My photo");
+        waited.setPhoto("http://photo.jpg");
         waited.setNotes("New message");
 
         assertThrows(BadRequestException.class, () -> {
@@ -143,7 +143,7 @@ class EmployeeServiceImplTest {
         waited.setFirst_Name("Melisa");
         waited.setLast_Name("Lieby");
         waited.setEmployee_birthDate("1991-08-03");
-        waited.setEmployee_photo("Meli photo");
+        waited.setEmployee_photo("http://photo.jpg");
         waited.setEmployee_notes("Ux/Ui Designer");
 
         when(employeeService.saveEmployeeDto(employeeDto)).
@@ -167,7 +167,7 @@ class EmployeeServiceImplTest {
         waited.setFirstName("Federico");
         waited.setLastName("Valle");
         waited.setBirthDate("1989-12-27");
-        waited.setPhoto("My photo");
+        waited.setPhoto("http://photo.jpg");
         waited.setNotes("New message");
 
         Optional<Employee> optionalEntity = Optional.of(employee);
@@ -202,14 +202,14 @@ class EmployeeServiceImplTest {
         existingEmployee.setFirstName("John");
         existingEmployee.setLastName("Doe");
         existingEmployee.setBirthDate("1990-01-01");
-        existingEmployee.setPhoto("photo.jpg");
+        existingEmployee.setPhoto("http://photo.jpg");
         existingEmployee.setNotes("Some notes");
 
         Employee updatedEmployee = new Employee();
         updatedEmployee.setFirstName("Jane");
         updatedEmployee.setLastName("Smith");
         updatedEmployee.setBirthDate("1995-02-02");
-        updatedEmployee.setPhoto("new_photo.jpg");
+        updatedEmployee.setPhoto("http://photo.jpg");
         updatedEmployee.setNotes("Updated notes");
 
         /*given(employeeRepository.findById(1)).willReturn(Optional.of(existingEmployee));
@@ -263,7 +263,7 @@ class EmployeeServiceImplTest {
         updatedEmployee.setFirstName("Jane");
         updatedEmployee.setLastName("Smith");
         updatedEmployee.setBirthDate("1995-02-02");
-        updatedEmployee.setPhoto("new_photo.jpg");
+        updatedEmployee.setPhoto("http://photo.jpg");
         updatedEmployee.setNotes("Updated notes");
 
         // Configure the mock repository to return an empty Optional

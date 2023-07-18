@@ -77,9 +77,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
         List<ErrorDetails> list = new ArrayList<>();
 
-        if(checkError(e -> !isValid(e.getFirstName(),VALID_NAME), employee) ||
-                checkError(e -> !isValid(e.getLastName(),VALID_NAME), employee) ||
-                checkError(e -> !isValid(e.getBirthDate(),BIRTHDATE_REGEXP), employee)){
+        if(checkError(e -> !isValid(e.getFirstName(),VALID_NAME) || e.getFirstName().equalsIgnoreCase("null"), employee) ||
+                checkError(e -> !isValid(e.getLastName(),VALID_NAME) || e.getLastName().equalsIgnoreCase("null"), employee) ||
+                checkError(e -> !isValid(e.getBirthDate(),BIRTHDATE_REGEXP) || e.getBirthDate().equalsIgnoreCase("null"), employee)){
 
             checkIfIsNull(employee.getFirstName(),"FirstName",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
             checkIfIsNull(employee.getLastName(),"LastName",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
@@ -102,9 +102,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
         List<ErrorDetails> list = new ArrayList<>();
 
-        if(checkError(e -> !isValid(e.getFirst_Name(),VALID_NAME), employeeDto) ||
-                checkError(e -> !isValid(e.getLast_Name(),VALID_NAME), employeeDto) ||
-                checkError(e -> !isValid(e.getEmployee_birthDate(),BIRTHDATE_REGEXP), employeeDto)){
+        if(checkError(e -> !isValid(e.getFirst_Name(),VALID_NAME) || e.getFirst_Name().equalsIgnoreCase("null"), employeeDto) ||
+                checkError(e -> !isValid(e.getLast_Name(),VALID_NAME) || e.getLast_Name().equalsIgnoreCase("null"), employeeDto) ||
+                checkError(e -> !isValid(e.getEmployee_birthDate(),BIRTHDATE_REGEXP) || e.getEmployee_birthDate().equalsIgnoreCase("null"), employeeDto)){
 
             checkIfIsNull(employeeDto.getFirst_Name(),"first_Name",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
             checkIfIsNull(employeeDto.getLast_Name(),"last_Name",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
@@ -131,9 +131,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
         List<ErrorDetails> list = new ArrayList<>();
 
-        if(checkError(e -> !isValid(e.getFirstName(),VALID_NAME), employee) ||
-                checkError(e -> !isValid(e.getLastName(),VALID_NAME), employee) ||
-                checkError(e -> !isValid(e.getBirthDate(),BIRTHDATE_REGEXP), employee)) {
+        if(checkError(e -> !isValid(e.getFirstName(),VALID_NAME) || e.getFirstName().equalsIgnoreCase("null"), employee) ||
+                checkError(e -> !isValid(e.getLastName(),VALID_NAME) || e.getLastName().equalsIgnoreCase("null"), employee) ||
+                checkError(e -> !isValid(e.getBirthDate(),BIRTHDATE_REGEXP) || e.getBirthDate().equalsIgnoreCase("null"), employee)) {
 
             checkIfIsNull(employee.getFirstName(),"FirstName",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
             checkIfIsNull(employee.getLastName(),"LastName",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
