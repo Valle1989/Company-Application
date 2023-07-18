@@ -4,12 +4,14 @@ import com.fvalle.company.dto.EmployeeDto;
 import com.fvalle.company.entity.Employee;
 import com.fvalle.company.service.IEmployeeService;
 import com.fvalle.company.service.impl.EmployeeServiceImpl;
+import com.fvalle.company.utils.ImageExtension;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -44,7 +44,7 @@ public class CheckNullField {
         if(optional.isPresent()){
             if(value.test(parameter) || !isValid(parameter.toString(), regex)){
                 list.add(new ErrorDetails(HttpStatus.BAD_REQUEST.value(),field + " field is mandatory. However, " +
-                        "it cannot be an empty string, numbers are not allowed, and null cannot be entered."));
+                        "it cannot be an empty string, numbers, dates and boolean values are not allowed, and null cannot be entered."));
                 logger.error("Error, el campo " + field.toLowerCase() + " debe mandarse obligatoriamente");
             }
         }else{
@@ -62,12 +62,13 @@ public class CheckNullField {
      * @param list
      * @param <T>
      */
-    public static <T> void checkIfIsNullWithoutRegExp(T parameter, String field, Predicate<T> value, List<ErrorDetails> list){
+    public static <T> void checkIfIsNullWithoutRegExp
+    (T parameter, String field, Predicate<T> value, List<ErrorDetails> list){
         Optional<T> optional = Optional.ofNullable(parameter);
         if(optional.isPresent()){
             if(value.test(parameter)){
                 list.add(new ErrorDetails(HttpStatus.BAD_REQUEST.value(),field + " field is mandatory. However, " +
-                        "it cannot be an empty string, numbers are not allowed, and null cannot be entered."));
+                        "it cannot be an empty string, numbers, dates and boolean values are not allowed, and null cannot be entered."));
                 logger.error("Error, el campo " + field.toLowerCase() + " debe mandarse obligatoriamente");
             }
         }else{

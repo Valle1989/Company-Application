@@ -1,6 +1,7 @@
 package com.fvalle.company.service;
 
 import com.fvalle.company.dto.ProductDto;
+import com.fvalle.company.dto.ProductUpdateDto;
 import com.fvalle.company.entity.Product;
 
 import java.util.List;
@@ -16,5 +17,7 @@ public interface IProductService {
     ProductDto save(ProductDto productDto);
 
     ProductDto update(int id, ProductDto productDto);
+
+    ProductUpdateDto updateProductWithDto(int id, ProductUpdateDto productUpdateDto);
     public boolean delete(int productId);
 }

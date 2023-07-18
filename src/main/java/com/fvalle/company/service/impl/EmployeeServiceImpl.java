@@ -74,18 +74,17 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     @Transactional
     public Employee save(Employee employee) {
-        List<ErrorDetails> list = new ArrayList<>();
-        if(checkError(e -> e.getFirstName() == null || !isValid(e.getFirstName(),VALID_NAME), employee) ||
-                checkError(e -> e.getLastName() == null || !isValid(e.getLastName(),VALID_NAME), employee) ||
-                checkError(e -> e.getBirthDate() == null || !isValid(e.getBirthDate(),BIRTHDATE_REGEXP), employee) ||
-                checkError(e -> e.getPhoto() == null || e.getPhoto().equals("") , employee) ||
-                checkError(e -> e.getNotes() == null || e.getNotes().equals("") , employee)){
 
-            checkIfIsNull(employee.getFirstName(),"FirstName",n -> n == null,VALID_NAME, list);
-            checkIfIsNull(employee.getLastName(),"LastName",n -> n == null,VALID_NAME, list);
-            checkIfIsNull(employee.getBirthDate(),"BirthDate",n -> n == null,BIRTHDATE_REGEXP, list);
-            checkIfIsNullWithoutRegExp(employee.getPhoto(),"Photo",n -> n == null || n.equals(""), list);
-            checkIfIsNullWithoutRegExp(employee.getNotes(),"Notes",n -> n == null || n.equals(""), list);
+        List<ErrorDetails> list = new ArrayList<>();
+
+        if(checkError(e -> !isValid(e.getFirstName(),VALID_NAME), employee) ||
+                checkError(e -> !isValid(e.getLastName(),VALID_NAME), employee) ||
+                checkError(e -> !isValid(e.getBirthDate(),BIRTHDATE_REGEXP), employee)){
+
+            checkIfIsNull(employee.getFirstName(),"FirstName",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
+            checkIfIsNull(employee.getLastName(),"LastName",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
+            checkIfIsNull(employee.getBirthDate(),"BirthDate",n -> n.equalsIgnoreCase("null"),BIRTHDATE_REGEXP, list);
+
             throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,"All fields must be send",list);
         }
         return employeeRepository.save(employee);
@@ -100,18 +99,17 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     @Transactional
     public EmployeeDto saveEmployeeDto(EmployeeDto employeeDto) {
-        List<ErrorDetails> list = new ArrayList<>();
-        if(checkError(e -> e.getFirst_Name() == null || !isValid(e.getFirst_Name(),VALID_NAME), employeeDto) ||
-                checkError(e -> e.getLast_Name() == null || !isValid(e.getLast_Name(),VALID_NAME), employeeDto) ||
-                checkError(e -> e.getEmployee_birthDate() == null || !isValid(e.getEmployee_birthDate(),BIRTHDATE_REGEXP), employeeDto) ||
-                checkError(e -> e.getEmployee_photo() == null || e.getEmployee_photo().equals("") , employeeDto) ||
-                checkError(e -> e.getEmployee_notes() == null || e.getEmployee_notes().equals("") , employeeDto)){
 
-            checkIfIsNull(employeeDto.getFirst_Name(),"first_Name",n -> n == null,VALID_NAME, list);
-            checkIfIsNull(employeeDto.getLast_Name(),"last_Name",n -> n == null,VALID_NAME, list);
-            checkIfIsNull(employeeDto.getEmployee_birthDate(),"employee_birthDate",n -> n == null,BIRTHDATE_REGEXP, list);
-            checkIfIsNullWithoutRegExp(employeeDto.getEmployee_photo(),"employee_photo",n -> n == null || n.equals(""), list);
-            checkIfIsNullWithoutRegExp(employeeDto.getEmployee_notes(),"employee_notes",n -> n == null || n.equals(""), list);
+        List<ErrorDetails> list = new ArrayList<>();
+
+        if(checkError(e -> !isValid(e.getFirst_Name(),VALID_NAME), employeeDto) ||
+                checkError(e -> !isValid(e.getLast_Name(),VALID_NAME), employeeDto) ||
+                checkError(e -> !isValid(e.getEmployee_birthDate(),BIRTHDATE_REGEXP), employeeDto)){
+
+            checkIfIsNull(employeeDto.getFirst_Name(),"first_Name",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
+            checkIfIsNull(employeeDto.getLast_Name(),"last_Name",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
+            checkIfIsNull(employeeDto.getEmployee_birthDate(),"employee_birthDate",n -> n.equalsIgnoreCase("null"),BIRTHDATE_REGEXP, list);
+
             throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,"All fields must be send",list);
         }
         Employee employee = employeeRepository.save(employeeMapper.toEmployee(employeeDto));
@@ -130,18 +128,17 @@ public class EmployeeServiceImpl implements IEmployeeService {
     public Employee update(Integer id, Employee employee) {
         Employee getEmployee = employeeRepository
                 .findById(id).orElseThrow(() -> new NotFoundException("Employee id not found"));
-        List<ErrorDetails> list = new ArrayList<>();
-        if(checkError(e -> e.getFirstName() == null || !isValid(e.getFirstName(),VALID_NAME), employee) ||
-                checkError(e -> e.getLastName() == null || !isValid(e.getLastName(),VALID_NAME), employee) ||
-                checkError(e -> e.getBirthDate() == null || !isValid(e.getBirthDate(),BIRTHDATE_REGEXP), employee) ||
-                checkError(e -> e.getPhoto() == null || e.getPhoto().equals("") , employee) ||
-                checkError(e -> e.getNotes() == null || e.getNotes().equals("") , employee)){
 
-            checkIfIsNull(employee.getFirstName(),"FirstName",n -> n == null,VALID_NAME, list);
-            checkIfIsNull(employee.getLastName(),"LastName",n -> n == null,VALID_NAME, list);
-            checkIfIsNull(employee.getBirthDate(),"BirthDate",n -> n == null,BIRTHDATE_REGEXP, list);
-            checkIfIsNullWithoutRegExp(employee.getPhoto(),"Photo",n -> n == null || n.equals(""), list);
-            checkIfIsNullWithoutRegExp(employee.getNotes(),"Notes",n -> n == null || n.equals(""), list);
+        List<ErrorDetails> list = new ArrayList<>();
+
+        if(checkError(e -> !isValid(e.getFirstName(),VALID_NAME), employee) ||
+                checkError(e -> !isValid(e.getLastName(),VALID_NAME), employee) ||
+                checkError(e -> !isValid(e.getBirthDate(),BIRTHDATE_REGEXP), employee)) {
+
+            checkIfIsNull(employee.getFirstName(),"FirstName",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
+            checkIfIsNull(employee.getLastName(),"LastName",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
+            checkIfIsNull(employee.getBirthDate(),"BirthDate",n -> n.equalsIgnoreCase("null"),BIRTHDATE_REGEXP, list);
+
             throw new BadRequestException("GSS-400-003",HttpStatus.BAD_REQUEST,"All fields must be send",list);
         }
 

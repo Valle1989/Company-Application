@@ -14,7 +14,8 @@ public class ProductDto {
     private double price;
     private int stock;
     private boolean active;
-    private int idSupplier;
+    //private int idSupplier;
+    private SupplierDto supplierDto;
     private CategoryDto categoryDto;
 
 }

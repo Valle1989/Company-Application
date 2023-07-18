@@ -1,8 +1,6 @@
 package com.fvalle.company.mapper;
 
-import com.fvalle.company.dto.CustomerDto;
 import com.fvalle.company.dto.EmployeeDto;
-import com.fvalle.company.entity.Customer;
 import com.fvalle.company.entity.Employee;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;

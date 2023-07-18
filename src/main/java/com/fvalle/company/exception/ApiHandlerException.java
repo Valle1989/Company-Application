@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,10 +14,32 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestControllerAdvice
-public class ApiHandlerException extends ResponseEntityExceptionHandler {
+public class ApiHandlerException {
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ExceptionMessageError> handleValidateException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<String, String>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String message = error.getDefaultMessage();
+
+            errors.put(fieldName, message);
+        });
+
+        ExceptionMessageError eme = ExceptionMessageError.builder().code("GSS-400-003")
+                .message("All fields must be send")
+                .timestamp(LocalDateTime.now())
+                .errors(errors)
+                .build();
+
+        return new ResponseEntity<>(eme, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionMessage> notFoundException(NotFoundException e){
