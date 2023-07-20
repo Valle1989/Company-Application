@@ -1,10 +1,12 @@
 package com.fvalle.company.service.impl;
 
 import com.fvalle.company.dto.ProductDto;
+import com.fvalle.company.dto.SupplierDto;
 import com.fvalle.company.dto.SupplierWithProductDto;
 import com.fvalle.company.entity.Product;
 import com.fvalle.company.entity.Supplier;
 import com.fvalle.company.mapper.ProductMapper;
+import com.fvalle.company.mapper.SupplierMapper;
 import com.fvalle.company.mapper.SupplierWithProductMapper;
 import com.fvalle.company.repository.ProductRepository;
 import com.fvalle.company.repository.SupplierRepository;
@@ -23,12 +25,27 @@ public class SupplierServiceImpl implements ISupplierService {
     private final SupplierRepository supplierRepository;
     private final ProductRepository productRepository;
     private final SupplierWithProductMapper supplierWithProductMapper;
+
+    private final SupplierMapper supplierMapper;
     private final ProductMapper productMapper;
 
     @Override
     public List<SupplierWithProductDto> getAll() {
         List<Supplier> list = supplierRepository.findAll();
         return supplierWithProductMapper.toSuppliersDto(list);
+    }
+
+    @Override
+    public List<SupplierDto> findAll() {
+        return supplierMapper.toSuppliers(supplierRepository.findAll());
+    }
+
+    public List<Supplier> getSupplierByCity(String city){
+        return supplierRepository.findSupplierByCity(city);
+    }
+
+    public List<Supplier> findSuppliersByName(String name){
+        return supplierRepository.findAllByNameContainingIgnoreCase(name);
     }
 
     @Override

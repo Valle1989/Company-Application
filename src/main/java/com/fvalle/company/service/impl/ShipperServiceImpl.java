@@ -24,6 +24,10 @@ public class ShipperServiceImpl implements IShipperService {
         return shipperRepository.findAll();
     }
 
+    public Shipper getByPhone(String phone){
+        return shipperRepository.findByPhone(phone);
+    }
+
     @Override
     public List<ShipperDto> findAll() {
         List<Shipper> shipperList = shipperRepository.findAll();

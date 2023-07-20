@@ -1,5 +1,6 @@
 package com.fvalle.company.controller;
 
+import com.fvalle.company.dto.CustomerDto;
 import com.fvalle.company.entity.Customer;
 import com.fvalle.company.service.ICustomerService;
 import com.fvalle.company.service.impl.CustomerServiceImpl;
@@ -21,10 +22,16 @@ public class CustomerController {
     private final ICustomerService customerService;
     private final CustomerServiceImpl customerServiceImpl;
 
+    @PostMapping("/save")
+    @PreAuthorize("hasAnyAuthority('user:create', 'admin:create')")
+    public ResponseEntity<Customer> addCustomer(@Valid @RequestBody Customer customer){
+        return new ResponseEntity<>(customerService.save(customer), HttpStatus.CREATED);
+    }
+
     @PostMapping("/add")
     @PreAuthorize("hasAnyAuthority('user:create', 'admin:create')")
-    public ResponseEntity<Customer> addCategory(@Valid @RequestBody Customer customer){
-        return new ResponseEntity<>(customerService.save(customer), HttpStatus.CREATED);
+    public ResponseEntity<CustomerDto> addCustomerDto(@Valid @RequestBody CustomerDto customerDto){
+        return new ResponseEntity<>(customerService.addCustomerDto(customerDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")

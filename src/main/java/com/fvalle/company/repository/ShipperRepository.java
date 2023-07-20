@@ -17,4 +17,6 @@ public interface ShipperRepository extends JpaRepository<Shipper,Integer> {
                     "WHERE id = :id", nativeQuery = true)
     @Modifying
     void updateShipper(@Param("shipperDto") ShipperDto shipperDto, Integer id);
+
+    Shipper findByPhone(String phone);
 }

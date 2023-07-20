@@ -1,8 +1,12 @@
 package com.fvalle.company.utils;
 
+import com.fvalle.company.entity.AuditableEntity;
+import com.fvalle.company.entity.Customer;
 import com.fvalle.company.exception.ErrorDetails;
+import com.fvalle.company.exception.ValueExistException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -89,4 +93,5 @@ public class CheckNullField {
         Matcher matcher = pattern.matcher(data);
         return matcher.matches();
     }
+
 }

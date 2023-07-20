@@ -3,9 +3,9 @@ package com.fvalle.company.service.impl;
 import com.fvalle.company.dto.CategoryDto;
 import com.fvalle.company.entity.Category;
 import com.fvalle.company.exception.BadRequestException;
-import com.fvalle.company.exception.CategoryExistException;
 import com.fvalle.company.exception.ErrorDetails;
 import com.fvalle.company.exception.NotFoundException;
+import com.fvalle.company.exception.ValueExistException;
 import com.fvalle.company.mapper.CategoryMapper;
 import com.fvalle.company.repository.CategoryRepository;
 import com.fvalle.company.service.ICategoryService;
@@ -71,7 +71,7 @@ public class CategoryServiceImpl implements ICategoryService {
                 .count();
 
         if(sameCategory > 0){
-            throw new CategoryExistException(categoryDto.getCategory());
+            throw new ValueExistException(categoryDto.getCategory());
         }
 
         String validCategory = "^[A-Z]'?[- a-zA-Z]*$";

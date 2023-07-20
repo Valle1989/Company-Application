@@ -2,18 +2,27 @@ package com.fvalle.company.service.impl;
 
 import com.fvalle.company.dto.CustomerDto;
 import com.fvalle.company.entity.Customer;
+import com.fvalle.company.exception.BadRequestException;
+import com.fvalle.company.exception.ErrorDetails;
 import com.fvalle.company.exception.NotFoundException;
+import com.fvalle.company.exception.ValueExistException;
 import com.fvalle.company.mapper.CustomerMapper;
 import com.fvalle.company.repository.CustomerRepository;
 import com.fvalle.company.service.ICustomerService;
+import com.fvalle.company.utils.CheckNullField;
 import com.fvalle.company.utils.UpdateEntityByFields;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.fvalle.company.utils.CheckNullField.*;
+import static com.fvalle.company.utils.CheckNullField.checkIfIsNull;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +31,8 @@ public class CustomerServiceImpl implements ICustomerService{
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
     private final UpdateEntityByFields<Customer,String> updateEntityByFields;
+
+    private static final String VALID_NAME = "^[A-Z]'?[- a-zA-Z]*$";
 
     /**
      * Method used to obtain the list of Customers
@@ -82,6 +93,25 @@ public class CustomerServiceImpl implements ICustomerService{
     @Override
     @Transactional
     public Customer save(Customer customer) {
+
+        checkValueRepeat(customerRepository, customer.getName());
+
+        List<ErrorDetails> list = new ArrayList<>();
+
+        if(checkError(c -> !isValid(c.getName(),VALID_NAME) || c.getName().equalsIgnoreCase("null"), customer) ||
+                checkError(c -> c.getAddress().equals("") || c.getAddress().equalsIgnoreCase("null"), customer) ||
+                checkError(c -> !isValid(c.getCity(),VALID_NAME) || c.getCity().equalsIgnoreCase("null"), customer) ||
+                checkError(c -> !isValid(c.getCountry(),VALID_NAME) || c.getCountry().equalsIgnoreCase("null"), customer)
+        ){
+
+            checkIfIsNull(customer.getName(),"name",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
+            checkIfIsNullWithoutRegExp(customer.getAddress(),"address",n -> n.equalsIgnoreCase("null") || n.equals(""), list);
+            checkIfIsNull(customer.getCity(),"city",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
+            checkIfIsNull(customer.getCountry(),"country",n -> n.equalsIgnoreCase("null"),VALID_NAME, list);
+
+            throw new BadRequestException("GSS-400-003", HttpStatus.BAD_REQUEST,"All fields must be send",list);
+        }
+
         return customerRepository.save(customer);
     }
 
@@ -94,8 +124,22 @@ public class CustomerServiceImpl implements ICustomerService{
     @Override
     @Transactional
     public CustomerDto addCustomerDto(CustomerDto customerDto) {
+
+        checkValueRepeat(customerRepository,customerDto.getCustomerName());
+
         Customer customer = customerMapper.toCustomer(customerDto);
         return customerMapper.toCustomerDto(customerRepository.save(customer));
+    }
+
+    private void checkValueRepeat(CustomerRepository customerRepository,String value){
+        Optional<Customer> customerRepeat = customerRepository.findAll()
+                .stream()
+                .filter(c -> c.getName().equalsIgnoreCase(value))
+                .findFirst();
+
+        if(customerRepeat.isPresent()){
+            throw new ValueExistException(value);
+        }
     }
 
     /**

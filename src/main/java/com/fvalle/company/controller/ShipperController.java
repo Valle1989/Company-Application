@@ -2,6 +2,7 @@ package com.fvalle.company.controller;
 
 import com.fvalle.company.dto.CategoryDto;
 import com.fvalle.company.dto.ShipperDto;
+import com.fvalle.company.entity.Customer;
 import com.fvalle.company.entity.Shipper;
 import com.fvalle.company.service.IShipperService;
 import com.fvalle.company.service.impl.ShipperServiceImpl;
@@ -32,6 +33,12 @@ public class ShipperController {
     @PreAuthorize("hasAuthority('admin:create')")
     public ResponseEntity<ShipperDto> addShipper(@Valid @RequestBody ShipperDto shipperDto){
         return new ResponseEntity<>(shipperService.addShipper(shipperDto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/phone/{phone}")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<Shipper> getByPhone(@PathVariable("phone") String phone){
+        return new ResponseEntity<>(shipperServiceImpl.getByPhone(phone),HttpStatus.OK);
     }
 
     @GetMapping("/all")
