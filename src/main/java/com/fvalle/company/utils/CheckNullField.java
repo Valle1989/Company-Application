@@ -1,7 +1,6 @@
 package com.fvalle.company.utils;
 
 import com.fvalle.company.entity.AuditableEntity;
-import com.fvalle.company.entity.Customer;
 import com.fvalle.company.exception.ErrorDetails;
 import com.fvalle.company.exception.ValueExistException;
 import org.apache.commons.logging.Log;
@@ -10,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -92,6 +92,25 @@ public class CheckNullField {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(data);
         return matcher.matches();
+    }
+
+    public static <T> void checkValueRepeat(JpaRepository<T,Integer> repository,String value,String attributeName){
+
+        Optional<T> repeat = repository.findAll()
+                .stream()
+                .filter(entity -> {
+                    try {
+                        return String.valueOf(entity.getClass().getMethod("get" + attributeName)
+                                .invoke(entity)).equalsIgnoreCase(value);
+                    } catch (Exception e) {
+                        return false;
+                    }
+                })
+                .findFirst();
+
+        if(repeat.isPresent()){
+            throw new ValueExistException(value);
+        }
     }
 
 }

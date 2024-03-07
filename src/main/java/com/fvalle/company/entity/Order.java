@@ -2,6 +2,7 @@ package com.fvalle.company.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fvalle.company.security.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -66,4 +68,7 @@ public class Order extends AuditableEntity{
     @JoinColumn(name = "id_shipper", insertable = false, updatable = false)
     @JsonIgnore
     private Shipper shipper;
+
+    @OneToMany(mappedBy = "order", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<OrderDetail> orderDetails;
 }

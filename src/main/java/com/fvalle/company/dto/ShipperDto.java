@@ -12,4 +12,5 @@ public class ShipperDto {
 
     private String shipperName;
     private String shipperPhone;
+    private TruckDto truckDto;
 }

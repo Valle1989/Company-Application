@@ -3,11 +3,13 @@ package com.fvalle.company.exception;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -20,6 +22,16 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ApiHandlerException {
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public ResponseEntity<ExceptionMessage> returnError(Exception e) {
+        e.printStackTrace();
+        ExceptionMessage eM = ExceptionMessage.builder().code("P-500").message(e.getMessage()).timestamp(LocalDateTime.now()).build();
+        return new ResponseEntity<>(eM,HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -59,6 +71,14 @@ public class ApiHandlerException {
         return new ResponseEntity<>(eM,e.getHttpStatus());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ResponseEntity<ExceptionMessage> badArgException(IllegalArgumentException e){
+        ExceptionMessage eM = ExceptionMessage.builder().code(String.valueOf(HttpStatus.BAD_REQUEST.value())).message(e.getMessage()).timestamp(LocalDateTime.now()).build();
+        return new ResponseEntity<>(eM, HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ExceptionMessage> badRequestException(BadRequestException e){
         List<ErrorDetails> list = new ArrayList<>();
@@ -86,7 +106,7 @@ public class ApiHandlerException {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValueExistException.class)
-    public ExceptionMessage handleEmailExist(ValueExistException e) {
+    public ExceptionMessage handleValueExist(ValueExistException e) {
         return new ExceptionMessage(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage(), LocalDateTime.now());
     }
 }

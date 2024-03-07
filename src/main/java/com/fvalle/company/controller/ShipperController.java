@@ -41,6 +41,12 @@ public class ShipperController {
         return new ResponseEntity<>(shipperServiceImpl.getByPhone(phone),HttpStatus.OK);
     }
 
+    @GetMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<ShipperDto> getByIdWithTruck(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(shipperServiceImpl.getWithTruckById(id),HttpStatus.OK);
+    }
+
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<List<Shipper>> getAll(){

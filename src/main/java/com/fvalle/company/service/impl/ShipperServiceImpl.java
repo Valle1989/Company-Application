@@ -1,6 +1,7 @@
 package com.fvalle.company.service.impl;
 
 import com.fvalle.company.dto.ShipperDto;
+import com.fvalle.company.dto.TruckDto;
 import com.fvalle.company.entity.Shipper;
 import com.fvalle.company.mapper.ShipperMapper;
 import com.fvalle.company.repository.ShipperRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,7 @@ public class ShipperServiceImpl implements IShipperService {
 
     private final ShipperRepository shipperRepository;
     private final ShipperMapper shipperMapper;
+    private final TruckServiceImpl truckService;
 
     @Override
     public List<Shipper> getAll() {
@@ -30,8 +33,33 @@ public class ShipperServiceImpl implements IShipperService {
 
     @Override
     public List<ShipperDto> findAll() {
+        List<ShipperDto> list = new ArrayList<>();
+        List<TruckDto> trucks = truckService.getAll();
         List<Shipper> shipperList = shipperRepository.findAll();
-        return shipperMapper.toShippersDto(shipperList);
+
+        shipperList.stream()
+                .forEach(sl -> {
+                    trucks.stream()
+                            .forEach(t -> {
+                                if(sl.getId() == t.getId()){
+                                    ShipperDto shipperDto = shipperMapper.toShipperDto(sl);
+                                    ShipperDto shi = new ShipperDto(shipperDto.getShipperName(),shipperDto.getShipperPhone(),t);
+                                    list.add(shi);
+                                }
+                            });
+                });
+
+        return list;
+    }
+
+    public ShipperDto getWithTruckById(Integer id){
+        Shipper shipper = getAll().stream()
+                .filter(s -> s.getId() == id)
+                .findFirst().get();
+        ShipperDto shipperDto = shipperMapper.toShipperDto(shipper);
+        TruckDto truckDto = truckService.getAll().stream().filter(t -> t.getId() == id).findFirst().get();
+        ShipperDto shipperDtoFinal = new ShipperDto(shipperDto.getShipperName(), shipperDto.getShipperPhone(), truckDto);
+        return shipperDtoFinal;
     }
 
     public boolean exists(int idShipper) {

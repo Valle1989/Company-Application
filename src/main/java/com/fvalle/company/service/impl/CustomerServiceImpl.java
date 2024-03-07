@@ -9,8 +9,8 @@ import com.fvalle.company.exception.ValueExistException;
 import com.fvalle.company.mapper.CustomerMapper;
 import com.fvalle.company.repository.CustomerRepository;
 import com.fvalle.company.service.ICustomerService;
-import com.fvalle.company.utils.CheckNullField;
 import com.fvalle.company.utils.UpdateEntityByFields;
+import com.fvalle.company.utils.UpdateFields;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,6 +31,8 @@ public class CustomerServiceImpl implements ICustomerService{
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
     private final UpdateEntityByFields<Customer,String> updateEntityByFields;
+
+    private final UpdateFields updateFields;
 
     private static final String VALID_NAME = "^[A-Z]'?[- a-zA-Z]*$";
 
@@ -94,7 +96,7 @@ public class CustomerServiceImpl implements ICustomerService{
     @Transactional
     public Customer save(Customer customer) {
 
-        checkValueRepeat(customerRepository, customer.getName());
+        checkValueRepeat(customerRepository, customer.getName(),"Name");
 
         List<ErrorDetails> list = new ArrayList<>();
 
@@ -125,13 +127,14 @@ public class CustomerServiceImpl implements ICustomerService{
     @Transactional
     public CustomerDto addCustomerDto(CustomerDto customerDto) {
 
-        checkValueRepeat(customerRepository,customerDto.getCustomerName());
+        //checkValueRepeat(customerRepository,customerDto.getCustomerName(), "Name");
+        checkValueRepeatII(customerRepository,customerDto.getCustomerName());
 
         Customer customer = customerMapper.toCustomer(customerDto);
         return customerMapper.toCustomerDto(customerRepository.save(customer));
     }
 
-    private void checkValueRepeat(CustomerRepository customerRepository,String value){
+    private void checkValueRepeatII(CustomerRepository customerRepository,String value){
         Optional<Customer> customerRepeat = customerRepository.findAll()
                 .stream()
                 .filter(c -> c.getName().equalsIgnoreCase(value))
@@ -152,14 +155,25 @@ public class CustomerServiceImpl implements ICustomerService{
     @Override
     @Transactional
     public Customer updateCustomer(Integer id, Customer customer) {
+
         Customer customerToUpdate = customerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Id, not found"));
-        customerToUpdate.setName(customer.getName());
+
+        updateFields.updateIfValueIfNotBlankAndNotEqualAndNotContainNumbersAndBoolean(customer.getName(),customerToUpdate.getName(),customerToUpdate::setName,"name");
+        updateFields.updateIfValueIfNotBlankAndNotEqual(customer.getAddress(),customerToUpdate.getAddress(),customerToUpdate::setAddress,"address");
+        updateFields.updateIfValueIfNotBlankAndNotEqualAndNotContainNumbersAndBoolean(customer.getCity(),customerToUpdate.getCity(),customerToUpdate::setCity,"city");
+        updateFields.updateIfValueIfNotBlankAndNotEqual(customer.getPostalCode(),customerToUpdate.getPostalCode(),customerToUpdate::setPostalCode,"postalCode");
+        updateFields.updateIfValueIfNotBlankAndNotEqualAndNotContainNumbersAndBoolean(customer.getCountry(),customerToUpdate.getCountry(),customerToUpdate::setCountry,"country");
+        updateFields.updateIfValueIfNotBlankAndNotEqual(customer.getPhone(),customerToUpdate.getPhone(),customerToUpdate::setPhone,"phone");
+
+
+        /*customerToUpdate.setName(customer.getName());
         customerToUpdate.setAddress(customer.getAddress());
         customerToUpdate.setCity(customer.getCity());
         customerToUpdate.setPostalCode(customer.getPostalCode());
         customerToUpdate.setCountry(customer.getCountry());
-        customerToUpdate.setPhone(customer.getPhone());
+        customerToUpdate.setPhone(customer.getPhone());*/
+
         return customerRepository.save(customerToUpdate);
     }
 

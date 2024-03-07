@@ -1,6 +1,7 @@
 package com.fvalle.company.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 
 @Data
 @Builder
@@ -33,13 +35,16 @@ public class OrderDetail extends AuditableEntity{
     @NotNull(message = "quantity field cannot be null")
     private Integer quantity;
 
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_order", insertable = false, updatable = false)
     private Order order;
 
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product", insertable = false, updatable = false)
     private Product product;
+
 }

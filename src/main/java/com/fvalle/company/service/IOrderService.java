@@ -11,6 +11,5 @@ public interface IOrderService {
     List<PurchaseOrderDto> getAll();
     List<Order> getAllOrders();
     Order save(Order order);
-
     ResponseEntity<?> delete(Integer id);
 }

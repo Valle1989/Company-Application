@@ -9,6 +9,8 @@ import com.fvalle.company.mapper.EmployeeMapper;
 import com.fvalle.company.repository.EmployeeRepository;
 import com.fvalle.company.service.IEmployeeService;
 import com.fvalle.company.utils.CheckNullField;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +23,8 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.fvalle.company.utils.CheckNullField.*;
 

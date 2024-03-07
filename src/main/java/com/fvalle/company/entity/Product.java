@@ -2,10 +2,13 @@ package com.fvalle.company.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,4 +49,7 @@ public class Product extends AuditableEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_category", insertable = false, updatable = false)
     private Category category;
+
+    @OneToMany(mappedBy = "product", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<OrderDetail> orderDetails;
 }

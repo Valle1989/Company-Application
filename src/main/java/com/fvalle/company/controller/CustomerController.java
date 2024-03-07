@@ -2,6 +2,7 @@ package com.fvalle.company.controller;
 
 import com.fvalle.company.dto.CustomerDto;
 import com.fvalle.company.entity.Customer;
+import com.fvalle.company.entity.Employee;
 import com.fvalle.company.service.ICustomerService;
 import com.fvalle.company.service.impl.CustomerServiceImpl;
 import jakarta.validation.Valid;
@@ -57,5 +58,12 @@ public class CustomerController {
     public ResponseEntity<Customer> updateCustomerByField(@PathVariable("id") Integer id, @RequestBody
     Map<String,Object> fields){
         return new ResponseEntity<>(customerService.updateCustomerByFields(id,fields), HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('admin:update')")
+    public ResponseEntity<Customer> updateCustomer(@PathVariable("id") Integer id,
+                                                   @Valid @RequestBody Customer customer){
+        return new ResponseEntity<>(customerService.updateCustomer(id,customer), HttpStatus.OK);
     }
 }
